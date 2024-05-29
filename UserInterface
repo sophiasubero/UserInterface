@@ -1,0 +1,110 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.io.*;
+
+class MenuDemo implements ActionListener {
+    // Declare variables
+    JMenuItem m1, m2, m3, m4;
+    JMenuBar mb;
+    JTextField txtbox;
+    JMenu menu;
+    JFrame frm;
+
+    // Constructor
+    public MenuDemo() {
+        // Create a new JFrame
+        frm = new JFrame();
+        frm.setLayout(null); // Set the layout to null (no layout manager)
+
+        // Create a JMenuBar
+        mb = new JMenuBar();
+        // Create a text field
+        txtbox = new JTextField();
+        // Create a JMenu
+        menu = new JMenu("Options");
+
+        // Create menu items
+        m1 = new JMenuItem("Date & Time");
+        m2 = new JMenuItem("Write to File");
+        m3 = new JMenuItem("Change Frame Color");
+        m4 = new JMenuItem("Exit");
+
+        // Add menu items to the menu
+        menu.add(m1);
+        menu.add(m2);
+        menu.add(m3);
+        menu.add(m4);
+
+        // Add the menu to the menu bar
+        mb.add(menu);
+        // Set the menu bar as the frame's menu bar
+        frm.setJMenuBar(mb);
+
+        // Add an action listener to each menu item
+        m1.addActionListener(this);
+        m2.addActionListener(this);
+        m3.addActionListener(this);
+        m4.addActionListener(this);
+
+        // Set the text field's bounds and add it to the frame
+        txtbox.setBounds(150, 50, 150, 30);
+        frm.add(txtbox);
+
+        // Set the frame's visible state and size
+        frm.setVisible(true);
+        frm.setSize(500, 350);
+
+    }
+
+    // Method called when a menu item is clicked
+    public void actionPerformed(ActionEvent ae) {
+        // Check which menu item was clicked
+        if (ae.getSource() == m1) {
+            // Get the current date and time and format it as a string
+            DateTimeFormatter dt = DateTimeFormatter.ofPattern("yyyy/mm/dd hh:mm:ss");
+            LocalDateTime current = LocalDateTime.now();
+            txtbox.setText(dt.format(current) + "");
+        }
+
+        if (ae.getSource() == m2) {
+            // Get the text from the text field
+            String s1 = txtbox.getText();
+            try {
+                // Create a file and write the text to it
+                File file = new File("Log.txt");
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                fw.write(s1);
+                fw.close();
+                // Set the text field's text to indicate success
+                txtbox.setText("File saved successfully.");
+            } catch (Exception e1) {
+                // Set the text field's text to indicate an error
+                txtbox.setText("Exception is " + e1);
+            }
+        }
+
+        if (ae.getSource() == m3) {
+            // Change the frame's background color to green
+            frm.getContentPane().setBackground(Color.green);
+        }
+
+        if (ae.getSource() == m4) {
+            // Close the frame (exit)
+            frm.setVisible(false);
+        }
+
+        // Set the default close operation for the frame
+        frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        // Create an instance of MenuDemo and start the GUI event loop
+        MenuDemo md = new MenuDemo();
+    }
+}
